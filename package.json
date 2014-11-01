@@ -1,0 +1,28 @@
+{
+  "name": "hubot-sendgrid",
+  "description": "SendGrid plugin for hubot",
+  "version": "0.1.0",
+  "author": "Jason Staten <jstaten07@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "hubot",
+    "hubot-scripts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/statianzo/hubot-sendgrid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/statianzo/hubot-sendgrid/issues"
+  },
+  "dependencies": {
+    "coffee-script": "^1.8.0"
+  },
+  "main": "index.coffee",
+  "scripts": {
+    "test": "./node_modules/.bin/nodeunit --reporter skip_passed"
+  },
+  "devDependencies": {
+    "nodeunit": "^0.9.0"
+  }
+}
