@@ -25,12 +25,16 @@ hubot sendgrid stats
 hubot sendgrid stats YYYY-MM-DD
 ```
 
-#### Todo: Blocks, Bounces, and Unsubscribes
+#### Blocks, Bounces, Invalids, Unsubscribes, and Spam Reports
 
 ```
-hubot sendgrid blocks # Last 10 blocks
+hubot sendgrid blocks # First 10 blocks of today
 
-hubot sendgrid bounces 20 # Last 20 bounces
+hubot sendgrid invalids # First 10 invalid emails of today
 
-hubot sendgrid unsubscribes YYYY-MM-DD # Bounces on YYYY-MM-DD (limit 100)
+hubot sendgrid bounces 20 # First 20 bounces of today
+
+hubot sendgrid unsubscribes YYYY-MM-DD # First 10 unsubscribes on YYYY-MM-DD
+
+hubot sendgrid spam reports YYYY-MM-DD 20 # First 20 spam reports on YYYY-MM-DD
 ```

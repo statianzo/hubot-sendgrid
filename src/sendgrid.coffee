@@ -9,25 +9,20 @@
 #
 # Commands:
 #   hubot sendgrid stats [YYYY-MM-DD] - Email stats for date (default today)
+#   hubot sendgrid <type> [YYYY-MM-DD] [limit] - bounces, blocks, invalids, spam reports, unsubscribes
 #
 # Author:
 #   statianzo
 
-statToLabel =
-  "blocked": "Blocks"
-  "bounces": "Bounces"
-  "clicks": "Clicks"
-  "delivered": "Delivered"
-  "invalid_email": "Invalids"
-  "opens": "Opens"
-  "repeat_bounces": "Repeat Bounces"
-  "requests": "Requests"
-  "spam_drop": "Spam Drops"
-  "spamreports": "Spam Reports"
-  "unique_clicks": "Unique Clicks"
-  "unique_opens": "Unique Opens"
-  "unsubscribes": "Unsubscribes"
+stats = require('./stats')
+list = require('./list')
 
+today = ->
+  date = new Date
+  yyyy = date.getFullYear().toString()
+  mm = (date.getMonth()+1).toString()
+  dd  = date.getDate().toString()
+  "#{yyyy}-#{if mm[1] then mm else "0"+mm[0]}-#{if dd[1] then dd else "0"+dd[0]}"
 
 module.exports = plugin = (robot) ->
   apiUser = process.env.HUBOT_SENDGRID_USER
@@ -59,20 +54,27 @@ module.exports = plugin = (robot) ->
       if (err)
         msg.send "Failed: #{err.message}"
       else
-        msg.send plugin.stats(json)
+        msg.send stats(json)
 
+  robot.respond /sendgrid (blocks|bounces|invalids|spam reports|unsubscribes)( (\d{4}-\d{2}-\d{2}))?( (\d+))?/i, (msg) ->
+    params = {date: 1}
+    op = msg.match[1]
+    date = msg.match[3] || today()
+    params.limit = parseInt(msg.match[5]) || 10
+    params.start_date = date
+    params.end_date = date
 
-plugin.stats = (statDays) ->
-  lines = statDays.map (day) ->
-    dayLines = []
-    dayLines.push "SendGrid stats for #{day.date}"
-    for stat, label of statToLabel when day[stat]
-      dayLines.push "#{label}: #{day[stat]}"
+    path = switch op
+      when "blocks" then "blocks.get.json"
+      when "bounces" then "bounces.get.json"
+      when "invalids" then "invalidemails.get.json"
+      when "spam reports" then "spamreports.get.json"
+      when "unsubscribes" then "unsubscribes.get.json"
 
-    dayLines.push ""
+    return unless path
 
-    dayLines
-
-
-  # Flatten and join
-  [].concat.apply([], lines).join("\n")
+    request path, params, (err, json) ->
+      if (err)
+        msg.send "Failed: #{err.message}"
+      else
+        msg.send list(json)

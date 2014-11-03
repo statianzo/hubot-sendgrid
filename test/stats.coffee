@@ -1,7 +1,7 @@
 Error.stackTraceLimit = 1
 
 samples = require("./samples")
-cmd = require("../src/sendgrid").stats
+cmd = require("../src/stats")
 
 res = stats = lines = null
 any = (f, xs) ->
